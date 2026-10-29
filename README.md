@@ -6,7 +6,7 @@
 
 ## 直接使用
 
-[下载 v0.1.0 使用包](https://github.com/cryptoplayer90/video-studio-tool/releases/download/v0.1.0/video-studio-0.1.0.zip) · [查看全部版本](https://github.com/cryptoplayer90/video-studio-tool/releases)
+[下载 v0.1.1 使用包](https://github.com/cryptoplayer90/video-studio-tool/releases/download/v0.1.1/video-studio-0.1.1.zip) · [查看全部版本](https://github.com/cryptoplayer90/video-studio-tool/releases)
 
 1. 解压构建包，使用最新版 Chrome、Edge 或 Safari 打开 `index.html`。
 2. 填写 API Base URL 和自己的 API Key。地址可以包含 `/v1`，工具会统一处理。
@@ -97,4 +97,6 @@ CHROME_PATH="/path/to/chrome" npm run test:browser
 
 ## 许可证
 
-MIT。图标第三方声明见 `THIRD_PARTY_NOTICES.md`。
+MIT。Copyright (c) 2026 币圈90后。X：[@cryptoplayer999](https://x.com/cryptoplayer999)。
+
+完整许可见 `LICENSE`；图标第三方声明见 `THIRD_PARTY_NOTICES.md`。
