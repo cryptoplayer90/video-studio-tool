@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "name": "我的 OpenAI 兼容服务",
+  "idempotency": false,
+  "fields": {
+    "seconds": "seconds",
+    "resolution": "resolution",
+    "audio": "generate_audio",
+    "image": "input_reference",
+    "video": "reference_videos"
+  },
+  "models": [
+    {
+      "id": "doubao-seedance-2.5",
+      "brand": "字节跳动 · Seedance",
+      "seconds": {
+        "default": 5,
+        "max": 30
+      },
+      "resolutions": [
+        "480p",
+        "720p",
+        "1080p"
+      ],
+      "audio": false,
+      "media": {
+        "image": null,
+        "video": null
+      }
+    }
+  ]
+}

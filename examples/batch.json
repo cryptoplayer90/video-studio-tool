@@ -1,0 +1,16 @@
+[
+  {
+    "prompt": "橘猫在窗台上伸懒腰",
+    "seconds": 5,
+    "resolution": "720p"
+  },
+  {
+    "prompt": "根据参考素材生成视频",
+    "images": [
+      "cat.png"
+    ],
+    "videos": [
+      "motion.mp4"
+    ]
+  }
+]

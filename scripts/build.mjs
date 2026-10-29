@@ -1,0 +1,11 @@
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+const root=fileURLToPath(new URL('../',import.meta.url));
+const read=path=>readFile(root+path,'utf8');
+const [template,css,core,presets,logos,app]=await Promise.all(['src/index.html','src/styles.css','src/core.js','src/presets.js','src/brand-logos.js','src/app.js'].map(read));
+const script=[core,presets,logos,app.replace(/^import .*;\n/gm,'')].join('\n').replace(/^export /gm,'');
+if(/^import /m.test(script))throw new Error('Unresolved source imports');
+const output=template.replace('/* STYLES */',()=>css).replace('/* APPLICATION */',()=>`(()=>{'use strict';\n${script.replace(/<\/script/gi,'<\\/script')}\n})();`);
+await mkdir(root+'dist',{recursive:true});
+await writeFile(root+'dist/index.html',output);
+console.log(`Built dist/index.html (${Buffer.byteLength(output)} bytes; no runtime dependencies)`);

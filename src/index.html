@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="浏览器直连 API 的独立视频生成工作台，支持单条和批量视频生成。">
+  <title>Video Studio · 视频生成工作台</title>
+  <style>/* STYLES */</style>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="logo" href="#"><span class="logo-mark">V</span><span>Video Studio<small>独立视频工作台</small></span></a>
+    <div class="nav-label">工作区</div>
+    <a class="nav-item active" href="#workbench"><span aria-hidden="true">▣</span> 视频生成</a>
+    <div class="sidebar-footer"><span class="privacy-dot"></span> 浏览器直连你的 API<p>Key 默认仅留在内存<br>文件确认后才会上传</p><span class="version">v0.1.0 · Open source</span></div>
+  </aside>
+  <div class="workspace" id="workbench">
+    <header class="topbar"><div class="breadcrumb">工作区 <span>/</span> 视频生成</div><div class="top-actions"><button id="help-button" class="button subtle" type="button">使用说明</button><button id="theme-button" class="icon-button" type="button" aria-label="切换深浅色"><span data-icon="sun"></span></button></div></header>
+    <main>
+      <div class="page-heading"><div><div class="eyebrow">VIDEO WORKSPACE</div><h1>让想法，开始流动。</h1><p>连接你的模型，从一段提示词到一组视频。</p></div><span class="privacy-badge"><span class="privacy-dot"></span> 本地运行 · 无 Key 托管</span></div>
+      <div id="notice" class="notice" role="status" hidden></div>
+      <div class="workbench-grid">
+        <div class="editor">
+          <section class="card connection">
+            <div class="card-heading"><h2><span class="step-number">01</span>连接与模型</h2><button id="refresh-models" class="button small" type="button"><span data-icon="refresh"></span>刷新模型</button></div>
+            <div class="grid two"><div class="field"><label for="api-base">API Base URL</label><input id="api-base" type="url" value="https://a6api.com" spellcheck="false" autocomplete="off" placeholder="https://a6api.com"></div><div class="field"><div class="label-row"><label for="api-key">API Key</label><button id="clear-key" class="text-button" type="button">清除 Key</button></div><input id="api-key" type="password" autocomplete="off" placeholder="输入你的 API Key" spellcheck="false"></div></div>
+            <div class="connection-footer"><label class="check"><input type="checkbox" id="remember-key">仅在当前标签页会话记住 Key</label><span class="muted">文件直接发往你填写的 API</span></div>
+            <div class="separator"></div>
+            <div class="grid two"><div class="field"><label id="brand-label" for="brand-trigger">品牌</label><div class="brand-picker" id="brand-picker"><select id="brand" hidden aria-hidden="true" tabindex="-1"></select><button id="brand-trigger" class="brand-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="brand-options" aria-labelledby="brand-label brand-selected"><span id="brand-logo" class="brand-logo" aria-hidden="true"></span><span id="brand-selected"></span><svg class="brand-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div id="brand-options" class="brand-options" role="listbox" aria-labelledby="brand-label" hidden></div></div></div><div class="field"><label for="model">模型</label><select id="model"></select></div></div>
+            <div id="custom-model-field" class="field spaced" hidden><div class="label-row start"><label for="custom-model">自定义模型名称</label><span class="tooltip-wrap"><button type="button" class="help-icon" aria-label="模型名称对齐说明" aria-describedby="model-tooltip"><span data-icon="circle-alert"></span></button><span class="tooltip" id="model-tooltip" role="tooltip">名称须与 A6API 完全一致，包括大小写、数字和符号。<br>例如：doubao-seedance-2.5</span></span></div><input id="custom-model" placeholder="例如：doubao-seedance-2.5" spellcheck="false" autocomplete="off"><span class="hint">请填写 A6API 中的完整模型名称。</span></div>
+            <div class="model-summary"><span class="model-monogram" id="model-monogram">S</span><div><strong id="model-name"></strong><div id="model-source" class="hint"></div></div><span class="source-tag" id="catalog-source">本地配置</span></div>
+            <p id="catalog-message" class="hint spaced">内置目录为 2026-10-29 快照。点击刷新获取当前 API 视频模型。</p>
+            <details class="provider-settings"><summary>兼容服务配置</summary><p class="hint">其他兼容服务可导入模型和请求字段预设。配置不含 Key。</p><div class="button-row"><button id="import-provider" class="button small" type="button">导入配置</button><button id="export-provider" class="button small" type="button">导出配置</button><button id="reset-provider" class="button small" type="button">使用 A6API 预设</button></div><input id="provider-file" type="file" accept=".json" hidden></details>
+          </section>
+          <section class="card creation">
+            <div class="card-heading"><h2><span class="step-number">02</span>创作内容</h2><div class="segmented" role="tablist" aria-label="生成模式"><button id="single-tab" class="selected" type="button" role="tab" aria-selected="true" aria-controls="single-panel">单条生成</button><button id="batch-tab" type="button" role="tab" aria-selected="false" aria-controls="batch-panel">批量生成</button></div></div>
+            <div id="single-panel" role="tabpanel" aria-labelledby="single-tab"><div class="field"><label for="prompt">提示词</label><textarea id="prompt" rows="4" placeholder="描述你想看到的画面、动作与镜头语言…"></textarea><div class="hint prompt-hint"><span>清楚的画面与镜头描述，让想法更接近成片。</span><span id="prompt-count">0 字</span></div></div></div>
+            <div id="batch-panel" role="tabpanel" aria-labelledby="batch-tab" hidden><div class="field"><label for="batch-input">批量任务</label><textarea id="batch-input" rows="5" placeholder="每行一个提示词，或粘贴 JSON 数组 / CSV"></textarea></div><div class="dropzone batch-drop" id="batch-drop"><span data-icon="file-up"></span><div><strong>拖拽任务文件到这里</strong><p class="hint">TXT、JSON、CSV · 每批最多 20 条</p></div><button id="choose-batch" class="button small" type="button">选择文件</button><input id="batch-file" type="file" accept=".txt,.json,.csv" hidden></div><div class="hint spaced" id="batch-file-name"></div><details class="batch-help"><summary>查看导入格式与文件关联方式</summary><pre>prompt,seconds,resolution,images,videos
+"窗台上的橘猫",5,720p,cat.png,
+"根据参考视频生成",5,720p,,motion.mp4</pre><p class="hint">images / videos 使用已选本地文件名，多个文件用 | 分隔；省略这两列则沿用下方默认素材。JSON 使用文件名数组。不能读取任意本机路径。</p></details></div>
+            <div class="separator"></div>
+            <div class="card-heading config-heading"><h3>生成配置</h3><label class="check"><input id="override" type="checkbox">自定义配置</label></div><p id="config-hint" class="hint">按模型预设置灰；自定义配置可解锁全部配置。</p>
+            <div class="grid three spaced"><div class="field"><label for="seconds">时长（秒）</label><input id="seconds" type="number" min="1" step="1"><span id="seconds-hint" class="hint"></span></div><div class="field"><label for="resolution">分辨率</label><select id="resolution"></select><input id="custom-resolution" list="resolution-options" placeholder="例如：1080p" hidden><datalist id="resolution-options"><option value="480p"><option value="720p"><option value="1080p"><option value="2k"><option value="4k"></datalist><span id="resolution-hint" class="hint"></span></div><div class="field"><label for="audio">声音</label><select id="audio"><option value="">不设置</option><option value="true">开启声音</option><option value="false">关闭声音</option></select><span id="audio-hint" class="hint"></span></div></div>
+            <div class="grid two media-grid spaced">
+              <div class="field"><label for="image-files">输入图片（可选）</label><div class="dropzone media-drop" id="image-drop"><span class="upload-icon" data-icon="image"></span><strong>拖拽图片到这里</strong><p class="hint">支持多张，可继续添加</p><button id="choose-image" class="button small" type="button">选择文件</button><input id="image-files" type="file" multiple accept="image/png,image/jpeg,image/webp,image/gif,image/avif" hidden><span id="image-hint" class="hint"></span></div><div id="image-list" class="file-list"></div><button id="clear-image" type="button" class="text-button" hidden>清空图片</button></div>
+              <div class="field"><label for="video-files">输入视频（可选）</label><div class="dropzone media-drop" id="video-drop"><span class="upload-icon" data-icon="video"></span><strong>拖拽视频到这里</strong><p class="hint">支持多个，可继续添加</p><button id="choose-video" class="button small" type="button">选择文件</button><input id="video-files" type="file" multiple accept="video/mp4,video/quicktime,video/webm,video/x-m4v" hidden><span id="video-hint" class="hint"></span></div><div id="video-list" class="file-list"></div><button id="clear-video" type="button" class="text-button" hidden>清空视频</button></div>
+            </div>
+            <details class="advanced"><summary>高级 JSON <span class="hint">补充其他参数</span></summary><textarea id="extra" rows="4" spellcheck="false" placeholder='{"seed": 42}' aria-label="高级 JSON"></textarea><p class="hint">仅补充未受控参数，不覆盖模型、提示词、规格或输入素材。</p></details>
+            <div class="submit-bar"><p><span data-icon="circle-alert"></span>提交后可能产生实际费用</p><button id="prepare" class="button primary" type="button"><span data-icon="sparkles"></span><span id="prepare-label">预览并生成</span></button></div>
+          </section>
+        </div>
+        <aside class="results-column">
+          <section class="card queue-card"><div class="card-heading"><h2>任务队列 <span class="count" id="queue-count">0</span></h2><button id="stop-queue" class="text-button" type="button" disabled>停止提交</button></div><div class="queue-policy">每批最多 20 条 · 串行提交<br>本页最多轮询 3 条 · 间隔 5 秒</div><div id="tasks"><div class="empty-state"><span data-icon="video"></span><strong>你的下一段视频，从这里开始</strong><p>提交任务后，可在这里查看进度与生成结果。</p></div></div><details class="manual-query"><summary>查询已有任务</summary><label for="task-id" class="hint">使用上方 API 地址和 Key</label><input id="task-id" placeholder="输入 task ID" autocomplete="off"><button id="query-task" type="button" class="button small">查询任务</button></details></section>
+          <section class="card output-card"><div class="card-heading"><h2>生成结果</h2><span class="hint" id="result-label">等待成片</span></div><div id="result-empty" class="result-placeholder"><span data-icon="play"></span><p>完成后在这里预览视频</p></div><video id="player" controls playsinline preload="metadata" hidden></video><div id="result-actions" class="button-row spaced" hidden><a id="download" class="button primary small" download>下载视频</a><button id="reload-content" class="button small" type="button">重新获取</button></div><p id="result-error" class="hint error-text" hidden></p></section>
+          <p class="local-note"><span data-icon="shield"></span>没有中转服务。你的 Key 与素材只发送到你配置的 API。</p>
+        </aside>
+      </div>
+      <footer class="page-footer">X : @cryptoplayer999 <span>·</span> 独立开源视频生成工具 <span>·</span> v0.1.0</footer>
+    </main>
+  </div>
+  <dialog id="confirm-dialog" class="confirm-dialog"><div class="dialog-heading"><div><div class="eyebrow">REVIEW & GENERATE</div><h2 id="confirm-title">确认生成</h2></div><button id="cancel-confirm" class="icon-button" type="button" aria-label="关闭确认"><span data-icon="x"></span></button></div><p class="confirmation-warning">确认后将向以下 API 提交，可能产生实际费用。</p><div id="confirm-summary"></div><div class="request-label">最终请求预览（不包含 API Key）</div><pre id="request-preview"></pre><div class="dialog-actions"><button id="back-confirm" class="button" type="button">返回修改</button><button id="confirm-submit" class="button primary" type="button">确认并提交</button></div></dialog>
+  <dialog id="help-dialog"><div class="dialog-heading"><h2>开始你的视频创作</h2><button id="close-help" class="icon-button" type="button" aria-label="关闭说明"><span data-icon="x"></span></button></div><ol class="help-steps"><li>填写 API 地址和 Key，刷新模型或使用本地预设。</li><li>选择品牌与模型，填写提示词或导入批量任务。</li><li>能力未知的配置默认置灰；勾选“自定义配置”可以尝试，最终由服务端校验。</li><li>确认请求后提交。在任务卡片中停止／继续查询，完成后预览或下载。</li></ol><p class="hint">内置模型与时长预设为 2026-10-29 快照。图片／视频的上游本地文件兼容性尚未逐模型验证，需启用自定义配置使用；默认字段为 input_reference / reference_videos，可通过兼容服务配置修改。</p><p class="hint">每轮自动查询最多 30 分钟，单次查询超时 30 秒，异常即暂停。继续查询仅查询原任务，不重新生成。浏览器直连受目标服务 CORS 限制，本工具不做代理绕过。每文件 200 MiB、每任务素材合计 500 MiB 为工具安全上限，不代表模型上限。</p></dialog>
+  <script>/* APPLICATION */</script>
+</body>
+</html>
